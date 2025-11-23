@@ -21,10 +21,10 @@
     #viewOverlay { position:fixed;top:0;left:0;width:100vw;height:100vh;
       background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;z-index:99999; }
     #viewButton { font-size:2rem; padding:2rem 3rem; }
-    .sound-tip { position:absolute; top:54px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); color:#fff; font-size:1.1rem; padding:0.7rem 1.2rem; border-radius:24px; z-index:100; text-align:center;}
   </style>
 </head>
 <body>
+
 <div id="viewOverlay">
   <button id="viewButton" class="btn">👀 View</button>
 </div>
@@ -34,27 +34,30 @@
     <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
     <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
   </div>
+
   <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
+
   <div id="storyPlayer" class="story-video"></div>
+
   <div class="touch-left" id="tapLeft"></div>
   <div class="touch-right" id="tapRight"></div>
+
   <div id="replayContainer">
     <a href="home.html"><button class="btn">🔄 Replay Journey</button></a>
   </div>
 </div>
+
 <script>
 const stories = [
   {
     url: `<div style="position:relative;aspect-ratio:36/47;">
       <iframe 
         loading="lazy" title="Gumlet video player"
-        src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59"
-        style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+        src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59?autoplay=true&mute=false&loop=true&controls=0"
+        style="border:none; position:absolute; top:0; left:0; height:100%; width:100%;"
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen">
       </iframe>
-     
     </div>`,
-    aspect: "36/47",
     caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
     duration: 18
   },
@@ -62,13 +65,11 @@ const stories = [
     url: `<div style="position:relative;aspect-ratio:540/721;">
       <iframe 
         loading="lazy" title="Gumlet video player"
-        src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854"
-        style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+        src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854?autoplay=true&mute=false&loop=true&controls=0"
+        style="border:none; position:absolute; top:0; left:0; height:100%; width:100%;"
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen">
       </iframe>
-     
     </div>`,
-    aspect: "540/721",
     caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
     duration: 40
   }
@@ -86,16 +87,20 @@ function playStory(index) {
   replayContainer.style.display = "none";
   storyPlayer.innerHTML = stories[index].url;
   caption.textContent = stories[index].caption;
+
   p1.style.width = index === 0 ? "0%" : "100%";
   p2.style.width = index === 1 ? "0%" : "100%";
 
   let bar = current === 0 ? p1 : p2;
   bar.style.width = "0%";
+
   let duration = stories[index].duration;
   let startTime = Date.now();
+
   let interval = setInterval(() => {
     if (current !== index) return clearInterval(interval);
     let percent = ((Date.now() - startTime) / 1000) / duration * 100;
+
     if (percent >= 100) {
       bar.style.width = "100%";
       clearInterval(interval);
@@ -113,6 +118,7 @@ function nextStory() {
     replayContainer.style.display = "block";
   }
 }
+
 function previousStory() {
   if (current > 0) {
     replayContainer.style.display = "none";
@@ -128,5 +134,6 @@ document.getElementById("viewButton").onclick = function() {
   playStory(0);
 };
 </script>
+
 </body>
 </html>
