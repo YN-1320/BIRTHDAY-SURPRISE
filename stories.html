@@ -7,24 +7,36 @@
   <style>
     body { margin: 0; background: #000; font-family: Arial, sans-serif; }
     .story-container { width: 100vw; height: 100vh; position: relative; background: #000; display: flex; justify-content: center; align-items: center; }
-    .story-video { width: 100%; height: 100%; object-fit: cover; background: #000; position: relative; }
+    
+    /* Video container keeps ORIGINAL SIZE */
+    .story-video { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; 
+      background: #000; 
+      position: relative; 
+    }
+
     .progress-wrapper { position: absolute; top: 20px; left: 10px; right: 10px; display: flex; gap: 5px; z-index: 50; }
     .progress-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.3); border-radius: 10px; overflow: hidden; }
     .progress-fill { width: 0%; height: 100%; background: white; transition: width 0.1s linear; }
+
     .story-caption { position: absolute; top: 45px; width: 100%; text-align: center; color: white; font-size: 22px; font-weight: bold; z-index: 40; text-shadow: 2px 2px 6px rgba(0,0,0,0.6);}
+
     .touch-left, .touch-right { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 100; }
     .touch-left { left: 0; }
     .touch-right { right: 0; }
+
     #replayContainer { position: absolute; bottom: 40px; width: 100%; text-align: center; display: none; z-index: 200; }
     .btn { background: linear-gradient(45deg,#ff6b6b,#4ecdc4); border:none; padding:1rem 2rem; font-size:1.2rem; color:white; border-radius:50px; cursor:pointer; margin:1rem; transition:all 0.3s ease; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:9999;}
     .btn:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.3); background:linear-gradient(45deg,#ff5252,#26c6da);}
+
     #viewOverlay { position:fixed;top:0;left:0;width:100vw;height:100vh;
       background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;z-index:99999; }
     #viewButton { font-size:2rem; padding:2rem 3rem; }
   </style>
 </head>
 <body>
-
 <div id="viewOverlay">
   <button id="viewButton" class="btn">👀 View</button>
 </div>
@@ -36,7 +48,6 @@
   </div>
 
   <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
-
   <div id="storyPlayer" class="story-video"></div>
 
   <div class="touch-left" id="tapLeft"></div>
@@ -50,26 +61,28 @@
 <script>
 const stories = [
   {
-    url: `<div style="position:relative;aspect-ratio:36/47;">
+    url: `
       <iframe 
-        loading="lazy" title="Gumlet video player"
+        loading="lazy"
+        title="Gumlet video player"
         src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59?autoplay=true&mute=false&loop=true&controls=0"
-        style="border:none; position:absolute; top:0; left:0; height:100%; width:100%;"
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen">
+        style="border:none; height:100%; width:100%;"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen">
       </iframe>
-    </div>`,
+    `,
     caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
     duration: 18
   },
   {
-    url: `<div style="position:relative;aspect-ratio:540/721;">
+    url: `
       <iframe 
-        loading="lazy" title="Gumlet video player"
+        loading="lazy"
+        title="Gumlet video player"
         src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854?autoplay=true&mute=false&loop=true&controls=0"
-        style="border:none; position:absolute; top:0; left:0; height:100%; width:100%;"
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen">
+        style="border:none; height:100%; width:100%;"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen">
       </iframe>
-    </div>`,
+    `,
     caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
     duration: 40
   }
@@ -99,6 +112,7 @@ function playStory(index) {
 
   let interval = setInterval(() => {
     if (current !== index) return clearInterval(interval);
+
     let percent = ((Date.now() - startTime) / 1000) / duration * 100;
 
     if (percent >= 100) {
