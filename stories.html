@@ -18,20 +18,16 @@
     #replayContainer { position: absolute; bottom: 40px; width: 100%; text-align: center; display: none; z-index: 200; }
     .btn { background: linear-gradient(45deg,#ff6b6b,#4ecdc4); border:none; padding:1rem 2rem; font-size:1.2rem; color:white; border-radius:50px; cursor:pointer; margin:1rem; transition:all 0.3s ease; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:9999;}
     .btn:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.3); background:linear-gradient(45deg,#ff5252,#26c6da);}
-    #startOverlay { position:fixed;top:0;left:0;width:100vw;height:100vh;
-      background:rgba(0,0,0,0.88);display:flex;align-items:center;
-      justify-content:center;z-index:99999; }
-    #startButton { font-size:2rem; padding:2rem 3rem; }
+    #viewOverlay { position:fixed;top:0;left:0;width:100vw;height:100vh;
+      background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;z-index:99999; }
+    #viewButton { font-size:2rem; padding:2rem 3rem; }
   </style>
 </head>
 <body>
-<!-- Start overlay, required for audio autoplay -->
-<div id="startOverlay" style="
-  position:fixed;top:0;left:0;width:100vw;height:100vh;
-  background:rgba(0,0,0,0.77);display:flex;align-items:center;justify-content:center;z-index:99999;">
-  
+<!-- View overlay required for starting playback with sound -->
+<div id="viewOverlay">
+  <button id="viewButton" class="btn">👀View</button>
 </div>
-
 
 <div class="story-container" id="storyContainer">
   <div class="progress-wrapper">
@@ -39,7 +35,6 @@
     <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
   </div>
   <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
-  <!-- Gumlet iframe will be injected here -->
   <div id="storyPlayer" class="story-video"></div>
   <div class="touch-left" id="tapLeft"></div>
   <div class="touch-right" id="tapRight"></div>
@@ -71,7 +66,8 @@ const stories = [
       </iframe>
     </div>`,
     aspect: "540/721",
-     caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
+    caption: "SECOND VIDEO CAPTION"
+  }
 ];
 
 let current = 0;
@@ -124,13 +120,11 @@ function previousStory() {
 document.getElementById("tapRight").addEventListener("click", nextStory);
 document.getElementById("tapLeft").addEventListener("click", previousStory);
 
-// Start overlay disables autoplay block (with sound) on first interaction
-document.getElementById("startButton").onclick = function() {
-  document.getElementById("startOverlay").style.display = "none";
-  playStory(0); // this injects the story iframe and sound will be allowed!
+// After View button is clicked, start stories with sound
+document.getElementById("viewButton").onclick = function() {
+  document.getElementById("viewOverlay").style.display = "none";
+  playStory(0);
 };
-
 </script>
 </body>
 </html>
-
