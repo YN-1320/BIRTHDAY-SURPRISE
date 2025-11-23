@@ -26,9 +26,12 @@
 </head>
 <body>
 <!-- Start overlay, required for audio autoplay -->
-<div id="startOverlay">
-  <button id="startButton" class="btn">🚀start</button>
+<div id="startOverlay" style="
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:rgba(0,0,0,0.77);display:flex;align-items:center;justify-content:center;z-index:99999;">
+  <button id="startButton" class="btn" style="font-size:2rem;"></button>
 </div>
+
 
 <div class="story-container" id="storyContainer">
   <div class="progress-wrapper">
@@ -68,8 +71,7 @@ const stories = [
       </iframe>
     </div>`,
     aspect: "540/721",
-    caption: "SECOND VIDEO CAPTION"
-  }
+     caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
 ];
 
 let current = 0;
@@ -125,8 +127,10 @@ document.getElementById("tapLeft").addEventListener("click", previousStory);
 // Start overlay disables autoplay block (with sound) on first interaction
 document.getElementById("startButton").onclick = function() {
   document.getElementById("startOverlay").style.display = "none";
-  playStory(0);
+  playStory(0); // this injects the story iframe and sound will be allowed!
 };
+
 </script>
 </body>
 </html>
+
