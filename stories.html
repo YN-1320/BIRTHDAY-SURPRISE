@@ -6,96 +6,102 @@
   <title>Story Viewer</title>
 
   <style>
-    body { margin: 0; background: #000; font-family: Arial, sans-serif; }
+    body { margin: 0; background: #000; font-family: Arial; }
 
     .story-container {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #000;
-      position: relative;
+      width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background: #000; position: relative;
     }
 
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;      /* IG Story effect */
-      object-position: center;
+    video.story-video {
+      width: 100%; height: 100%;
+      object-fit: cover;  /* IG style */
+      background: #000;
     }
 
     .progress-wrapper {
-      position: absolute;
-      top: 20px;
-      left: 10px;
-      right: 10px;
-      display: flex;
-      gap: 5px;
-      z-index: 50;
+      position: absolute; top: 20px; left: 10px; right: 10px;
+      display: flex; gap: 5px; z-index: 50;
     }
-    .progress-bar { flex:1; height:4px; background:rgba(255,255,255,0.3); border-radius:10px; overflow:hidden; }
-    .progress-fill { width:0%; height:100%; background:white; }
+    .progress-bar {
+      flex: 1; height: 4px; background: rgba(255,255,255,0.3);
+      border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill {
+      width: 0%; height: 100%; background: white;
+      transition: width 0.1s linear;
+    }
 
     .story-caption {
-      position:absolute; top:45px; width:100%;
-      text-align:center; color:white; font-size:22px; font-weight:bold;
-      text-shadow:2px 2px 6px rgba(0,0,0,0.6);
-      z-index:40;
+      position: absolute; top: 45px; width: 100%;
+      text-align: center; color: white;
+      font-size: 22px; font-weight: bold; z-index: 40;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
     }
 
     .touch-left, .touch-right {
-      position:absolute; top:0; bottom:0; width:50%; z-index:100;
+      position: absolute; top: 0; bottom: 0; width: 50%; z-index: 100;
     }
-    .touch-left { left:0; }
-    .touch-right { right:0; }
+    .touch-left { left: 0; }
+    .touch-right { right: 0; }
 
-    #viewOverlay {
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center;
-      z-index:99999;
+    #replayContainer {
+      position: absolute; bottom: 40px; width: 100%;
+      text-align: center; display: none; z-index: 200;
     }
     .btn {
-      background:linear-gradient(45deg,#ff6b6b,#4ecdc4); border:none;
-      padding:1.2rem 3rem; font-size:1.8rem;
-      color:white; border-radius:50px; cursor:pointer;
+      background: linear-gradient(45deg,#ff6b6b,#4ecdc4);
+      border:none; padding:1rem 2rem; font-size:1.2rem; color:white;
+      border-radius:50px; cursor:pointer; margin:1rem;
     }
+
+    #viewOverlay {
+      position:fixed;top:0;left:0;width:100vw;height:100vh;
+      background:rgba(0,0,0,0.88);
+      display:flex;align-items:center;justify-content:center;
+      z-index:99999;
+    }
+
+    #viewButton { font-size:2rem; padding:2rem 3rem; }
   </style>
 </head>
+
 <body>
 
-<!-- First click → enables sound -->
 <div id="viewOverlay">
   <button id="viewButton" class="btn">👀 View</button>
 </div>
 
-<div class="story-container">
-
+<div class="story-container" id="storyContainer">
   <div class="progress-wrapper">
     <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
     <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
   </div>
 
-  <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE ❤️😘</div>
+  <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
 
-  <video id="storyVideo" playsinline></video>
+  <video id="storyVideo" class="story-video" playsinline></video>
 
   <div class="touch-left" id="tapLeft"></div>
   <div class="touch-right" id="tapRight"></div>
+
+  <div id="replayContainer">
+    <a href="home.html"><button class="btn">🔄 Replay Journey</button></a>
+  </div>
 </div>
 
 <script>
-const videos = [
+const stories = [
   {
-    src: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&raw=1",
-    caption: "HAPPY BIRTHDAY MY LOVE ❤️😘",
-    duration: 18
+    url: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?raw=1",
+    caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
+    duration: 20
   },
   {
-    src: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&raw=1",
-    caption: "HAPPY BIRTHDAY MY LOVE ❤️😘",
-    duration: 40
+    url: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?raw=1",
+    caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
+    duration: 50
   }
 ];
 
@@ -104,34 +110,36 @@ const video = document.getElementById("storyVideo");
 const caption = document.getElementById("caption");
 const p1 = document.getElementById("p1");
 const p2 = document.getElementById("p2");
+const replayContainer = document.getElementById("replayContainer");
 
-function playStory(i) {
-  current = i;
+function playStory(index){
+  current = index;
+  replayContainer.style.display = "none";
 
-  video.src = videos[i].src;
-  caption.textContent = videos[i].caption;
-
+  video.src = stories[index].url;
   video.currentTime = 0;
   video.muted = false;
+  video.autoplay = true;
   video.play();
 
-  p1.style.width = i === 0 ? "0%" : "100%";
-  p2.style.width = i === 1 ? "0%" : "100%";
+  caption.textContent = stories[index].caption;
 
-  let bar = i === 0 ? p1 : p2;
+  p1.style.width = index === 0 ? "0%" : "100%";
+  p2.style.width = index === 1 ? "0%" : "100%";
+
+  let bar = index === 0 ? p1 : p2;
   bar.style.width = "0%";
 
+  let duration = stories[index].duration;
   let start = Date.now();
-  let duration = videos[i].duration;
 
-  let int = setInterval(() => {
-    if (current !== i) return clearInterval(int);
+  let progress = setInterval(() => {
+    if(current !== index) return clearInterval(progress);
 
-    let percent = ((Date.now() - start) / 1000 / duration) * 100;
-
-    if (percent >= 100) {
+    let percent = ((Date.now() - start) / 1000) / duration * 100;
+    if(percent >= 100){
       bar.style.width = "100%";
-      clearInterval(int);
+      clearInterval(progress);
       nextStory();
     } else {
       bar.style.width = percent + "%";
@@ -139,19 +147,27 @@ function playStory(i) {
   }, 100);
 }
 
-function nextStory() {
-  if (current < videos.length - 1) playStory(current + 1);
+function nextStory(){
+  if(current < stories.length - 1){
+    playStory(current + 1);
+  } else {
+    replayContainer.style.display = "block";
+  }
 }
-function prevStory() {
-  if (current > 0) playStory(current - 1);
+
+function previousStory(){
+  if(current > 0){
+    replayContainer.style.display = "none";
+    playStory(current - 1);
+  }
 }
 
 document.getElementById("tapRight").onclick = nextStory;
-document.getElementById("tapLeft").onclick = prevStory;
+document.getElementById("tapLeft").onclick = previousStory;
 
 document.getElementById("viewButton").onclick = () => {
   document.getElementById("viewOverlay").style.display = "none";
-  video.muted = false;
+  video.play();
   playStory(0);
 };
 </script>
