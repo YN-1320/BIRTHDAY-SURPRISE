@@ -1,203 +1,120 @@
-STORIES.HTML <!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>View Story</title>
-
-<style>
-    body {
-        margin: 0;
-        background: #000;
-        font-family: Arial, sans-serif;
-        overflow: hidden;
-    }
-
-    .story-container {
-        width: 100vw;
-        height: 100vh;
-        position: relative;
-        overflow: hidden;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    iframe.story-video {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-
-    .progress-wrapper {
-        position: absolute;
-        top: 20px;
-        left: 10px;
-        right: 10px;
-        display: flex;
-        gap: 5px;
-        z-index: 50;
-    }
-
-    .progress-bar {
-        flex: 1;
-        height: 4px;
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        width: 0%;
-        height: 100%;
-        background: white;
-        transition: linear;
-    }
-
-    .story-caption {
-        position: absolute;
-        top: 45px;
-        width: 100%;
-        text-align: center;
-        color: white;
-        font-size: 22px;
-        font-weight: bold;
-        z-index: 40;
-        text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-    }
-
-    .touch-left, .touch-right {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 50%;
-        z-index: 100;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Instagram Story Viewer</title>
+  <style>
+    body { margin: 0; background: #000; font-family: Arial, sans-serif; }
+    .story-container { width: 100vw; height: 100vh; position: relative; background: #000; display: flex; justify-content: center; align-items: center; }
+    .story-video { width: 100%; height: 100%; object-fit: cover; background: #000; position: relative; }
+    .progress-wrapper { position: absolute; top: 20px; left: 10px; right: 10px; display: flex; gap: 5px; z-index: 50; }
+    .progress-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.3); border-radius: 10px; overflow: hidden; }
+    .progress-fill { width: 0%; height: 100%; background: white; transition: width 0.1s linear; }
+    .story-caption { position: absolute; top: 45px; width: 100%; text-align: center; color: white; font-size: 22px; font-weight: bold; z-index: 40; text-shadow: 2px 2px 6px rgba(0,0,0,0.6);}
+    .touch-left, .touch-right { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 100; }
     .touch-left { left: 0; }
     .touch-right { right: 0; }
-
-    .btn {
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-        border: none;
-        padding: 1rem 2rem;
-        font-size: 1.2rem;
-        color: white;
-        border-radius: 50px;
-        cursor: pointer;
-        margin: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 9999;
-    }
-
-    .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        background: linear-gradient(45deg, #ff5252, #26c6da);
-    }
-
-    #replayContainer {
-        position: absolute;
-        bottom: 40px;
-        width: 100%;
-        text-align: center;
-        display: none;
-        z-index: 200;
-    }
-</style>
+    #replayContainer { position: absolute; bottom: 40px; width: 100%; text-align: center; display: none; z-index: 200; }
+    .btn { background: linear-gradient(45deg,#ff6b6b,#4ecdc4); border:none; padding:1rem 2rem; font-size:1.2rem; color:white; border-radius:50px; cursor:pointer; margin:1rem; transition:all 0.3s ease; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:9999;}
+    .btn:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.3); background:linear-gradient(45deg,#ff5252,#26c6da);}
+  </style>
 </head>
 <body>
-
 <div class="story-container" id="storyContainer">
-
-    <!-- Progress Bars -->
-    <div class="progress-wrapper">
-        <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
-        <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
-    </div>
-
-    <!-- Caption -->
-    <div class="story-caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
-
-    <!-- Story Videos -->
-    <iframe id="storyFrame" class="story-video" allow="autoplay" src=""></iframe>
-
-    <!-- Tap zones -->
-    <div class="touch-left" id="tapLeft"></div>
-    <div class="touch-right" id="tapRight"></div>
-
-    <!-- Replay Button (Hidden at Start) -->
-    <div id="replayContainer">
-        <a href="home.html">
-            <button class="btn">🔄 Replay Journey</button>
-        </a>
-    </div>
-
+  <div class="progress-wrapper">
+    <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
+  </div>
+  <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
+  <!-- Gumlet iframe will be injected here -->
+  <div id="storyPlayer" class="story-video"></div>
+  <div class="touch-left" id="tapLeft"></div>
+  <div class="touch-right" id="tapRight"></div>
+  <div id="replayContainer">
+    <a href="home.html"><button class="btn">🔄 Replay Journey</button></a>
+  </div>
 </div>
-
 <script>
+const stories = [
+  {
+    url: "https://play.gumlet.io/embed/6922d24bd8414f42d6990fab?background=false&autoplay=true&loop=false&disableControls=false",
+    aspect: "36/47", // For portrait
+    caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
+  },
+  {
+    url: "https://play.gumlet.io/embed/6922d24bd8414f42d6990fa0?background=false&autoplay=true&loop=false&disableControls=false",
+    aspect: "16/9", // For landscape
+   caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
+  }
+];
+let current = 0;
+const p1 = document.getElementById("p1");
+const p2 = document.getElementById("p2");
+const caption = document.getElementById("caption");
+const replayContainer = document.getElementById("replayContainer");
+const storyPlayer = document.getElementById("storyPlayer");
 
-    const videos = [
-        {
-            url: "https://drive.google.com/file/d/1ZpyrsxDEmfoZQ725tGEMX4mr8gdpESEO/preview?autoplay=1&mute=0",
-            duration: 17000
-        },
-        {
-            url: "https://drive.google.com/file/d/1jS6RUXT1WJzHjnZDoE0YO-IxRjAQ54AC/preview?autoplay=1&mute=0",
-            duration: 31000
-        }
-    ];
+// Inject Gumlet iframe based on story
+function playStory(index) {
+  current = index;
+  replayContainer.style.display = "none";
+  // Remove previous iframe if it exists
+  storyPlayer.innerHTML = '';
+  // Create new Gumlet iframe
+  const iframe = document.createElement('iframe');
+  iframe.src = stories[index].url;
+  iframe.title = "Gumlet video player";
+  iframe.loading = "lazy";
+  iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen";
+  iframe.style.border = "none";
+  iframe.style.position = "absolute";
+  iframe.style.top = 0;
+  iframe.style.left = 0;
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  storyPlayer.style.aspectRatio = stories[index].aspect;
+  storyPlayer.appendChild(iframe);
 
-    let current = 0;
-    let timer;
-    const frame = document.getElementById("storyFrame");
-    const p1 = document.getElementById("p1");
-    const p2 = document.getElementById("p2");
-    const replayContainer = document.getElementById("replayContainer");
+  caption.textContent = stories[index].caption;
+  p1.style.width = index === 0 ? "0%" : "100%";
+  p2.style.width = index === 1 ? "0%" : "100%";
 
-    function playStory(index) {
-        current = index;
-
-        replayContainer.style.display = "none"; // hide replay button every time story changes
-
-        frame.src = videos[index].url;
-
-        p1.style.width = index === 0 ? "0%" : "100%";
-        p2.style.width = index === 1 ? "0%" : "0%";
-
-        let bar = index === 0 ? p1 : p2;
-        bar.style.transitionDuration = videos[index].duration + "ms";
-
-        setTimeout(() => { bar.style.width = "100%"; }, 50);
-
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            nextStory();
-        }, videos[index].duration);
+  // Optional: simulate progress bar for 10s per video if you want auto-advance like stories
+  let bar = current === 0 ? p1 : p2;
+  bar.style.width = "0%";
+  let duration = 10; // seconds per video (customize as needed)
+  let startTime = Date.now();
+  let interval = setInterval(() => {
+    if (current !== index) return clearInterval(interval);
+    let percent = ((Date.now() - startTime) / 1000) / duration * 100;
+    if (percent >= 100) {
+      bar.style.width = "100%";
+      clearInterval(interval);
+      nextStory();
+    } else {
+      bar.style.width = percent + "%";
     }
+  }, 100);
+}
 
-    function nextStory() {
-        if (current < videos.length - 1) {
-            playStory(current + 1);
-        } else {
-            // LAST STORY ENDED → Show replay button
-            replayContainer.style.display = "block";
-        }
-    }
+function nextStory() {
+  if (current < stories.length - 1) {
+    playStory(current + 1);
+  } else {
+    replayContainer.style.display = "block";
+  }
+}
+function previousStory() {
+  if (current > 0) {
+    replayContainer.style.display = "none";
+    playStory(current - 1);
+  }
+}
+document.getElementById("tapRight").addEventListener("click", nextStory);
+document.getElementById("tapLeft").addEventListener("click", previousStory);
 
-    function previousStory() {
-        if (current > 0) {
-            replayContainer.style.display = "none";
-            playStory(current - 1);
-        }
-    }
-
-    document.getElementById("tapRight").addEventListener("click", nextStory);
-    document.getElementById("tapLeft").addEventListener("click", previousStory);
-
-    playStory(0);
+playStory(0);
 </script>
-
 </body>
 </html>
