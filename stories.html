@@ -77,60 +77,8 @@ const stories = [
 
 
 
-let current = 0;
-const p1 = document.getElementById("p1");
-const p2 = document.getElementById("p2");
-const caption = document.getElementById("caption");
-const replayContainer = document.getElementById("replayContainer");
-const storyPlayer = document.getElementById("storyPlayer");
-
-function playStory(index) {
-  current = index;
-  replayContainer.style.display = "none";
-  storyPlayer.innerHTML = stories[index].url;
-  caption.textContent = stories[index].caption;
-  p1.style.width = index === 0 ? "0%" : "100%";
-  p2.style.width = index === 1 ? "0%" : "100%";
-
-  // Use per-story duration for the progress bar
-  let bar = current === 0 ? p1 : p2;
-  bar.style.width = "0%";
-  let duration = stories[index].duration;
-  let startTime = Date.now();
-  let interval = setInterval(() => {
-    if (current !== index) return clearInterval(interval);
-    let percent = ((Date.now() - startTime) / 1000) / duration * 100;
-    if (percent >= 100) {
-      bar.style.width = "100%";
-      clearInterval(interval);
-      nextStory();
-    } else {
-      bar.style.width = percent + "%";
-    }
-  }, 100);
-}
-
-function nextStory() {
-  if (current < stories.length - 1) {
-    playStory(current + 1);
-  } else {
-    replayContainer.style.display = "block";
-  }
-}
-function previousStory() {
-  if (current > 0) {
-    replayContainer.style.display = "none";
-    playStory(current - 1);
-  }
-}
-document.getElementById("tapRight").addEventListener("click", nextStory);
-document.getElementById("tapLeft").addEventListener("click", previousStory);
-
-document.getElementById("viewButton").onclick = function() {
-  document.getElementById("viewOverlay").style.display = "none";
-  playStory(0);
-};
 </script>
 </body>
 </html>
+
 
