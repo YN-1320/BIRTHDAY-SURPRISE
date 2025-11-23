@@ -1,220 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Story Viewer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Story Viewer</title>
 
-<style>
-  body { margin: 0; background: #000; font-family: Arial, sans-serif; overflow: hidden; }
+  <style>
+    body { margin: 0; background: #000; font-family: Arial, sans-serif; }
 
-  .story-container {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .story-container {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      position: relative;
+    }
 
-  /* IG style portrait container */
-  .story-video {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;      /* IG Story effect */
+      object-position: center;
+    }
 
-  /* Inside iframe should act like video-fit:cover */
-  .iframe-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
+    .progress-wrapper {
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      gap: 5px;
+      z-index: 50;
+    }
+    .progress-bar { flex:1; height:4px; background:rgba(255,255,255,0.3); border-radius:10px; overflow:hidden; }
+    .progress-fill { width:0%; height:100%; background:white; }
 
-  .iframe-wrapper iframe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 360px; /* fixed portrait width */
-    height: 640px; /* fixed portrait height */
-    transform: translate(-50%,-50%);
-    border: none;
-  }
+    .story-caption {
+      position:absolute; top:45px; width:100%;
+      text-align:center; color:white; font-size:22px; font-weight:bold;
+      text-shadow:2px 2px 6px rgba(0,0,0,0.6);
+      z-index:40;
+    }
 
-  .progress-wrapper {
-    position: absolute;
-    top: 20px;
-    left: 10px;
-    right: 10px;
-    display: flex;
-    gap: 5px;
-    z-index: 50;
-  }
+    .touch-left, .touch-right {
+      position:absolute; top:0; bottom:0; width:50%; z-index:100;
+    }
+    .touch-left { left:0; }
+    .touch-right { right:0; }
 
-  .progress-bar {
-    flex: 1;
-    height: 4px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    width: 0%;
-    height: 100%;
-    background: white;
-    transition: width 0.1s linear;
-  }
-
-  .story-caption {
-    position: absolute;
-    top: 45px;
-    width: 100%;
-    text-align: center;
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-    z-index: 40;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-  }
-
-  .touch-left, .touch-right {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 50%;
-    z-index: 100;
-  }
-
-  .touch-left { left: 0; }
-  .touch-right { right: 0; }
-
-  #replayContainer {
-    position: absolute;
-    bottom: 40px;
-    width: 100%;
-    text-align: center;
-    display: none;
-    z-index: 200;
-  }
-
-  .btn {
-    background: linear-gradient(45deg,#ff6b6b,#4ecdc4);
-    border:none;
-    padding:1rem 2rem;
-    font-size:1.2rem;
-    color:white;
-    border-radius:50px;
-    cursor:pointer;
-    margin:1rem;
-    transition:all 0.3s ease;
-    box-shadow:0 4px 15px rgba(0,0,0,0.2);
-  }
-  
-  #viewOverlay {
-    position:fixed;
-    top:0; left:0;
-    width:100vw; height:100vh;
-    background:rgba(0,0,0,0.88);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:99999;
-  }
-
-  #viewButton {
-    font-size:2rem;
-    padding:2rem 3rem;
-  }
-</style>
+    #viewOverlay {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center;
+      z-index:99999;
+    }
+    .btn {
+      background:linear-gradient(45deg,#ff6b6b,#4ecdc4); border:none;
+      padding:1.2rem 3rem; font-size:1.8rem;
+      color:white; border-radius:50px; cursor:pointer;
+    }
+  </style>
 </head>
-
 <body>
 
+<!-- First click → enables sound -->
 <div id="viewOverlay">
   <button id="viewButton" class="btn">👀 View</button>
 </div>
 
-<div class="story-container" id="storyContainer">
+<div class="story-container">
 
   <div class="progress-wrapper">
     <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
     <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
   </div>
 
-  <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
+  <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE ❤️😘</div>
 
-  <div id="storyPlayer" class="story-video"></div>
+  <video id="storyVideo" playsinline></video>
 
   <div class="touch-left" id="tapLeft"></div>
   <div class="touch-right" id="tapRight"></div>
-
-  <div id="replayContainer">
-    <a href="home.html"><button class="btn">🔄 Replay Journey</button></a>
-  </div>
-
 </div>
 
 <script>
-const stories = [
+const videos = [
   {
-    url: `
-      <div class="iframe-wrapper">
-        <iframe src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59?autoplay=true&mute=false&loop=true&controls=0"
-          allow="autoplay; encrypted-media; fullscreen; picture-in-picture">
-        </iframe>
-      </div>`,
-    caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
+    src: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&raw=1",
+    caption: "HAPPY BIRTHDAY MY LOVE ❤️😘",
     duration: 18
   },
   {
-    url: `
-      <div class="iframe-wrapper">
-        <iframe src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854?autoplay=true&mute=false&loop=true&controls=0"
-          allow="autoplay; encrypted-media; fullscreen; picture-in-picture">
-        </iframe>
-      </div>`,
-    caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
+    src: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&raw=1",
+    caption: "HAPPY BIRTHDAY MY LOVE ❤️😘",
     duration: 40
   }
 ];
 
 let current = 0;
+const video = document.getElementById("storyVideo");
+const caption = document.getElementById("caption");
 const p1 = document.getElementById("p1");
 const p2 = document.getElementById("p2");
-const caption = document.getElementById("caption");
-const replayContainer = document.getElementById("replayContainer");
-const storyPlayer = document.getElementById("storyPlayer");
 
-function playStory(index) {
-  current = index;
-  replayContainer.style.display = "none";
+function playStory(i) {
+  current = i;
 
-  storyPlayer.innerHTML = stories[index].url;
-  caption.textContent = stories[index].caption;
+  video.src = videos[i].src;
+  caption.textContent = videos[i].caption;
 
-  p1.style.width = index === 0 ? "0%" : "100%";
-  p2.style.width = index === 1 ? "0%" : "100%";
+  video.currentTime = 0;
+  video.muted = false;
+  video.play();
 
-  let bar = current === 0 ? p1 : p2;
+  p1.style.width = i === 0 ? "0%" : "100%";
+  p2.style.width = i === 1 ? "0%" : "100%";
+
+  let bar = i === 0 ? p1 : p2;
   bar.style.width = "0%";
 
-  let duration = stories[index].duration;
-  let startTime = Date.now();
+  let start = Date.now();
+  let duration = videos[i].duration;
 
-  let interval = setInterval(() => {
-    if (current !== index) return clearInterval(interval);
+  let int = setInterval(() => {
+    if (current !== i) return clearInterval(int);
 
-    let percent = ((Date.now() - startTime) / 1000) / duration * 100;
+    let percent = ((Date.now() - start) / 1000 / duration) * 100;
 
     if (percent >= 100) {
       bar.style.width = "100%";
-      clearInterval(interval);
+      clearInterval(int);
       nextStory();
     } else {
       bar.style.width = percent + "%";
@@ -223,25 +140,18 @@ function playStory(index) {
 }
 
 function nextStory() {
-  if (current < stories.length - 1) {
-    playStory(current + 1);
-  } else {
-    replayContainer.style.display = "block";
-  }
+  if (current < videos.length - 1) playStory(current + 1);
+}
+function prevStory() {
+  if (current > 0) playStory(current - 1);
 }
 
-function previousStory() {
-  if (current > 0) {
-    replayContainer.style.display = "none";
-    playStory(current - 1);
-  }
-}
+document.getElementById("tapRight").onclick = nextStory;
+document.getElementById("tapLeft").onclick = prevStory;
 
-document.getElementById("tapRight").addEventListener("click", nextStory);
-document.getElementById("tapLeft").addEventListener("click", previousStory);
-
-document.getElementById("viewButton").onclick = function() {
+document.getElementById("viewButton").onclick = () => {
   document.getElementById("viewOverlay").style.display = "none";
+  video.muted = false;
   playStory(0);
 };
 </script>
