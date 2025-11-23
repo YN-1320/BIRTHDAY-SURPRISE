@@ -24,7 +24,6 @@
   </style>
 </head>
 <body>
-<!-- View overlay required for starting playback with sound -->
 <div id="viewOverlay">
   <button id="viewButton" class="btn">👀View</button>
 </div>
@@ -47,10 +46,10 @@ const stories = [
   {
     url: `<div style="position:relative;aspect-ratio:36/47;">
       <iframe 
-            loading="lazy" title="Gumlet video player"
-            src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59?autoplay=true"
-            style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+        loading="lazy" title="Gumlet video player"
+        src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59"
+        style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
       </iframe>
     </div>`,
     aspect: "36/47",
@@ -59,14 +58,14 @@ const stories = [
   {
     url: `<div style="position:relative;aspect-ratio:540/721;">
       <iframe 
-            loading="lazy" title="Gumlet video player"
-            src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854?autoplay=true"
-            style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+        loading="lazy" title="Gumlet video player"
+        src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854"
+        style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
+        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
       </iframe>
     </div>`,
     aspect: "540/721",
-    caption: "SECOND VIDEO CAPTION"
+    caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
   }
 ];
 
@@ -89,7 +88,7 @@ function playStory(index) {
   // Simulate progress bar for 10s per story
   let bar = current === 0 ? p1 : p2;
   bar.style.width = "0%";
-  let duration = 10; // seconds
+  let duration = 10;
   let startTime = Date.now();
   let interval = setInterval(() => {
     if (current !== index) return clearInterval(interval);
@@ -120,7 +119,6 @@ function previousStory() {
 document.getElementById("tapRight").addEventListener("click", nextStory);
 document.getElementById("tapLeft").addEventListener("click", previousStory);
 
-// After View button is clicked, start stories with sound
 document.getElementById("viewButton").onclick = function() {
   document.getElementById("viewOverlay").style.display = "none";
   playStory(0);
