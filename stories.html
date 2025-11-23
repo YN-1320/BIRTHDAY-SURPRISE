@@ -47,6 +47,7 @@
       border-radius: 10px;
       overflow: hidden;
     }
+ #replayContainer { position: absolute; bottom: 40px; width: 100%; text-align: center; display: none; z-index: 200; }
 
     .progress-fill {
       width: 0%;
@@ -71,6 +72,10 @@
   <video id="player" playsinline autoplay></video>
 
 </div>
+   <div id="replayContainer">
+    <a href="home.html"><button class="btn">🔄 Replay Journey</button></a>
+  </div>
+
 
 <script>
 const videos = [
@@ -120,4 +125,5 @@ playVideo(0);
 
 </body>
 </html>
+
 
