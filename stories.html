@@ -1,105 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Story Viewer</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Story Viewer</title>
 
-  <style>
-    body { margin: 0; background: #000; font-family: Arial, sans-serif; overflow: hidden; }
+<style>
+  body { margin: 0; background: #000; font-family: Arial, sans-serif; overflow: hidden; }
 
-    .story-container {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #000;
-    }
+  .story-container {
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;    /* IG style portrait */
+  }
 
-    .progress-wrapper {
-      position: absolute;
-      top: 20px;
-      left: 10px;
-      right: 10px;
-      display: flex;
-      gap: 5px;
-      z-index: 10;
-    }
+  .progress-wrapper {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 20;
+  }
 
-    .progress-bar {
-      flex: 1;
-      height: 4px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 10px;
-      overflow: hidden;
-    }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
 
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      background: white;
-      transition: width 0.1s linear;
-    }
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: white;
+  }
 
-    .touch-left, .touch-right {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      z-index: 20;
-    }
+  .touch-left, .touch-right {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 50%;
+    z-index: 50;
+  }
 
-    .touch-left { left: 0; }
-    .touch-right { right: 0; }
+  .touch-left { left: 0; }
+  .touch-right { right: 0; }
 
-    #replayContainer {
-      position: absolute;
-      bottom: 40px;
-      width: 100%;
-      text-align: center;
-      display: none;
-      z-index: 30;
-    }
+  #replayContainer {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+    display: none;
+    z-index: 30;
+  }
 
-    .btn {
-      background: linear-gradient(45deg,#ff6b6b,#4ecdc4);
-      border:none;
-      padding:1rem 2rem;
-      font-size:1.2rem;
-      color:white;
-      border-radius:50px;
-      cursor:pointer;
-      margin:1rem;
-      transition:all 0.3s ease;
-      box-shadow:0 4px 15px rgba(0,0,0,0.2);
-    }
-  </style>
+  .btn {
+    background: linear-gradient(45deg,#ff6b6b,#4ecdc4);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+</style>
 </head>
 
 <body>
 
 <div class="story-container" id="storyContainer">
-
+  
   <div class="progress-wrapper">
-    <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
-    <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
+    <div class="progress-bar"><div id="p1" class="progress-fill"></div></div>
+    <div class="progress-bar"><div id="p2" class="progress-fill"></div></div>
   </div>
 
-  <video id="storyVideo" autoplay playsinline></video>
+  <div id="storyPlayer"></div>
 
   <div class="touch-left" id="tapLeft"></div>
   <div class="touch-right" id="tapRight"></div>
 
   <div id="replayContainer">
-    <a href="home.html"><button class="btn">🔄 Replay Journey</button></a>
+    <button class="btn" onclick="playStory(0)">Replay</button>
   </div>
 
 </div>
@@ -107,39 +102,39 @@
 <script>
 const stories = [
   {
-    url: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&st=u47ololq&raw=1",
+    src: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&st=u47ololq&dl=1",
     duration: 18
   },
   {
-    url: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&st=oy0w1hbg&raw=1",
+    src: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&st=oy0w1hbg&dl=1",
     duration: 40
   }
 ];
 
 let current = 0;
-const video = document.getElementById("storyVideo");
 const p1 = document.getElementById("p1");
 const p2 = document.getElementById("p2");
+const storyPlayer = document.getElementById("storyPlayer");
 const replayContainer = document.getElementById("replayContainer");
 
 function playStory(index) {
   current = index;
   replayContainer.style.display = "none";
 
-  video.src = stories[index].url;
-  video.autoplay = true;
-  video.muted = false;   // SOUND ENABLED
-  video.load();
-  video.play().catch(()=>{}); 
+  storyPlayer.innerHTML = `
+    <video id="videoPlayer" autoplay playsinline controls muted="false">
+      <source src="${stories[index].src}" type="video/mp4">
+    </video>
+  `;
 
-  p1.style.width = index === 0 ? "0%" : "100%";
-  p2.style.width = index === 1 ? "0%" : "100%";
+  const video = document.getElementById("videoPlayer");
+  video.muted = false;
 
   let bar = index === 0 ? p1 : p2;
   bar.style.width = "0%";
-
-  let duration = stories[index].duration;
+  
   let start = Date.now();
+  let duration = stories[index].duration;
 
   let interval = setInterval(() => {
     if (current !== index) return clearInterval(interval);
@@ -152,12 +147,16 @@ function playStory(index) {
     } else {
       bar.style.width = percent + "%";
     }
+
   }, 100);
 }
 
 function nextStory() {
-  if (current < stories.length - 1) playStory(current + 1);
-  else replayContainer.style.display = "block";
+  if (current < stories.length - 1) {
+    playStory(current + 1);
+  } else {
+    replayContainer.style.display = "block";
+  }
 }
 
 function previousStory() {
@@ -167,7 +166,7 @@ function previousStory() {
 document.getElementById("tapRight").addEventListener("click", nextStory);
 document.getElementById("tapLeft").addEventListener("click", previousStory);
 
-playStory(0); // Auto start
+playStory(0);
 </script>
 
 </body>
