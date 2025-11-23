@@ -54,17 +54,20 @@
       background: #fff;
       transition: width 0.1s linear;
     }
+
   </style>
 </head>
 <body>
 
 <div class="story-container">
 
+  <!-- Progress bars -->
   <div class="progress-wrapper">
     <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
     <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
   </div>
 
+  <!-- Video player -->
   <video id="player" playsinline autoplay></video>
 
 </div>
@@ -72,11 +75,11 @@
 <script>
 const videos = [
   {
-    src: "https://drive.google.com/uc?export=download&id=1ZpyrsxDEmfoZQ725tGEMX4mr8gdpESEO",
+    src: "https://raw.githubusercontent.com/YN-1320/BIRTHDAY-VIDEOS/refs/heads/main/VIDEO%201.mp4",
     duration: 22
   },
   {
-    src: "https://drive.google.com/uc?export=download&id=1jS6RUXT1WJzHjnZDoE0YO-IxRjAQ54AC",
+    src: "https://raw.githubusercontent.com/YN-1320/BIRTHDAY-VIDEO-2/refs/heads/main/VIDEO%202.mp4",
     duration: 45
   }
 ];
@@ -89,9 +92,6 @@ const p2 = document.getElementById("p2");
 function playVideo(index) {
   current = index;
   player.src = videos[index].src;
-
-  // play with sound
-  player.muted = false;
   player.play();
 
   let bar = index === 0 ? p1 : p2;
