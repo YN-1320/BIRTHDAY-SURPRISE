@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title> Story Viewer</title>
+  <title>Story Viewer</title>
   <style>
     body { margin: 0; background: #000; font-family: Arial, sans-serif; }
     .story-container { width: 100vw; height: 100vh; position: relative; background: #000; display: flex; justify-content: center; align-items: center; }
@@ -38,16 +38,31 @@
 <script>
 const stories = [
   {
-    url: "https://play.gumlet.io/embed/6922da6cd8414f42d6998f59",
-    aspect: "36/47", // Video 1
+    url: `<div style="position:relative;aspect-ratio:36/47;">
+      <iframe 
+            loading="lazy" title="Gumlet video player"
+            src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59"
+            style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+      </iframe>
+    </div>`,
+    aspect: "36/47",
     caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
   },
   {
-    url: "https://play.gumlet.io/embed/6922da6b08aef57ed3300854?background=false&autoplay=false&loop=false&disableControls=false",
-    aspect: "540/721", // Video 2
+    url: `<div style="position:relative;aspect-ratio:540/721;">
+      <iframe 
+            loading="lazy" title="Gumlet video player"
+            src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854"
+            style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+      </iframe>
+    </div>`,
+    aspect: "540/721",
      caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
   }
 ];
+
 let current = 0;
 const p1 = document.getElementById("p1");
 const p2 = document.getElementById("p2");
@@ -55,35 +70,19 @@ const caption = document.getElementById("caption");
 const replayContainer = document.getElementById("replayContainer");
 const storyPlayer = document.getElementById("storyPlayer");
 
-// Inject Gumlet iframe based on story
+// Dynamically inject Gumlet video embed code as HTML
 function playStory(index) {
   current = index;
   replayContainer.style.display = "none";
-  // Remove previous iframe if it exists
-  storyPlayer.innerHTML = '';
-  // Create new Gumlet iframe
-  const iframe = document.createElement('iframe');
-  iframe.src = stories[index].url;
-  iframe.title = "Gumlet video player";
-  iframe.loading = "lazy";
-  iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen";
-  iframe.style.border = "none";
-  iframe.style.position = "absolute";
-  iframe.style.top = 0;
-  iframe.style.left = 0;
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
-  storyPlayer.style.aspectRatio = stories[index].aspect;
-  storyPlayer.appendChild(iframe);
-
+  storyPlayer.innerHTML = stories[index].url;
   caption.textContent = stories[index].caption;
   p1.style.width = index === 0 ? "0%" : "100%";
   p2.style.width = index === 1 ? "0%" : "100%";
 
-  // Optional: simulate progress bar for 10s per video if you want auto-advance like stories
+  // Simulate progress bar for 10s per story
   let bar = current === 0 ? p1 : p2;
   bar.style.width = "0%";
-  let duration = 10; // seconds per video (customize as needed)
+  let duration = 10; // seconds
   let startTime = Date.now();
   let interval = setInterval(() => {
     if (current !== index) return clearInterval(interval);
@@ -118,4 +117,3 @@ playStory(0);
 </script>
 </body>
 </html>
-
