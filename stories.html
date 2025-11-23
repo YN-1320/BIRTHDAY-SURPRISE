@@ -72,6 +72,8 @@
     display: none;
     z-index: 30;
   }
+  .story-caption { position: absolute; top: 45px; width: 100%; text-align: center; color: white; font-size: 22px; font-weight: bold; z-index: 40; text-shadow: 2px 2px 6px rgba(0,0,0,0.6);}
+    .touch-left, .touch-right { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 100; }
 
   .btn {
     background: linear-gradient(45deg,#ff6b6b,#4ecdc4);
@@ -92,7 +94,7 @@
     <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
     <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
   </div>
-
+ <div class="story-caption" id="caption">HAPPY BIRTHDAY MY LOVE❤️😘</div>
   <video id="storyVideo" playsinline></video>
 
   <div class="touch-left" id="tapLeft"></div>
@@ -106,13 +108,11 @@
 <script>
 const videos = [
   {
-    src: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&raw=1",
-    caption: "HAPPY BIRTHDAY MY LOVE ❤️😘",
+   url: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&st=w12st1gi&dl=1",
     duration: 18
   },
   {
-    src: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&raw=1",
-    caption: "HAPPY BIRTHDAY MY LOVE ❤️😘",
+    url: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&st=oy0w1hbg&dl=1",
     duration: 40
   }
 ];
@@ -176,3 +176,4 @@ document.getElementById("viewButton").onclick = () => {
 
 </body>
 </html>
+
