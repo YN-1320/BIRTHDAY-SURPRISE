@@ -6,32 +6,36 @@
 <title>Story Viewer</title>
 
 <style>
-  body { margin: 0; background: #000; font-family: Arial, sans-serif; overflow: hidden; }
+  body {
+    margin: 0;
+    background: #000;
+    overflow: hidden;
+  }
 
   .story-container {
     width: 100vw;
     height: 100vh;
     background: #000;
-    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    position: relative;
   }
 
   video {
     width: 100%;
     height: 100%;
-    object-fit: cover;    /* IG style portrait */
+    object-fit: cover;
   }
 
   .progress-wrapper {
     position: absolute;
-    top: 15px;
+    top: 20px;
     left: 10px;
     right: 10px;
     display: flex;
     gap: 5px;
-    z-index: 20;
+    z-index: 10;
   }
 
   .progress-bar {
@@ -46,13 +50,15 @@
     width: 0%;
     height: 100%;
     background: white;
+    transition: width 0.1s linear;
   }
 
   .touch-left, .touch-right {
     position: absolute;
-    top: 0; bottom: 0;
+    top: 0;
+    bottom: 0;
     width: 50%;
-    z-index: 50;
+    z-index: 20;
   }
 
   .touch-left { left: 0; }
@@ -81,64 +87,59 @@
 
 <body>
 
-<div class="story-container" id="storyContainer">
-  
+<div class="story-container">
   <div class="progress-wrapper">
-    <div class="progress-bar"><div id="p1" class="progress-fill"></div></div>
-    <div class="progress-bar"><div id="p2" class="progress-fill"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
   </div>
 
-  <div id="storyPlayer"></div>
+  <video id="storyVideo" playsinline></video>
 
   <div class="touch-left" id="tapLeft"></div>
   <div class="touch-right" id="tapRight"></div>
 
   <div id="replayContainer">
-    <button class="btn" onclick="playStory(0)">Replay</button>
+    <button class="btn" onclick="restart()">Replay</button>
   </div>
-
 </div>
 
 <script>
 const stories = [
   {
-    src: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&st=u47ololq&dl=1",
+    url: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&st=w12st1gi&dl=1",
     duration: 18
   },
   {
-    src: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&st=oy0w1hbg&dl=1",
+    url: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&st=oy0w1hbg&dl=1",
     duration: 40
   }
 ];
 
 let current = 0;
+const video = document.getElementById("storyVideo");
 const p1 = document.getElementById("p1");
 const p2 = document.getElementById("p2");
-const storyPlayer = document.getElementById("storyPlayer");
 const replayContainer = document.getElementById("replayContainer");
 
-function playStory(index) {
-  current = index;
+function playStory(i) {
+  current = i;
   replayContainer.style.display = "none";
 
-  storyPlayer.innerHTML = `
-    <video id="videoPlayer" autoplay playsinline controls muted="false">
-      <source src="${stories[index].src}" type="video/mp4">
-    </video>
-  `;
-
-  const video = document.getElementById("videoPlayer");
+  video.src = stories[i].url;
+  video.currentTime = 0;
+  video.autoplay = true;
   video.muted = false;
+  video.play();
 
-  let bar = index === 0 ? p1 : p2;
+  let bar = (i === 0 ? p1 : p2);
   bar.style.width = "0%";
-  
-  let start = Date.now();
-  let duration = stories[index].duration;
+
+  let startTime = Date.now();
+  let duration = stories[i].duration;
 
   let interval = setInterval(() => {
-    if (current !== index) return clearInterval(interval);
-    let percent = ((Date.now() - start) / 1000) / duration * 100;
+    if (current !== i) return clearInterval(interval);
+    let percent = ((Date.now() - startTime) / 1000) / duration * 100;
 
     if (percent >= 100) {
       bar.style.width = "100%";
@@ -147,7 +148,6 @@ function playStory(index) {
     } else {
       bar.style.width = percent + "%";
     }
-
   }, 100);
 }
 
@@ -160,11 +160,18 @@ function nextStory() {
 }
 
 function previousStory() {
-  if (current > 0) playStory(current - 1);
+  if (current > 0) {
+    replayContainer.style.display = "none";
+    playStory(current - 1);
+  }
 }
 
-document.getElementById("tapRight").addEventListener("click", nextStory);
-document.getElementById("tapLeft").addEventListener("click", previousStory);
+function restart() {
+  playStory(0);
+}
+
+document.getElementById("tapRight").onclick = nextStory;
+document.getElementById("tapLeft").onclick = previousStory;
 
 playStory(0);
 </script>
