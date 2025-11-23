@@ -47,7 +47,15 @@
       border-radius: 10px;
       overflow: hidden;
     }
- replayContainer { position: absolute; bottom: 40px; width: 100%; text-align: center; display: none; z-index: 200; }
+ #replayContainer {
+      position: absolute;
+      bottom: 40px;
+      width: 100%;
+      text-align: center;
+      display: none;
+      z-index: 200;
+    }
+  </style>
 
     .progress-fill {
       width: 0%;
@@ -105,7 +113,7 @@ function playVideo(index) {
   let start = Date.now();
   let duration = videos[index].duration * 1000;
 
-  let timer = setInterval(() => {
+let timer = setInterval(() => {
     if (current !== index) return clearInterval(timer);
 
     let percent = ((Date.now() - start) / duration) * 100;
@@ -115,16 +123,18 @@ function playVideo(index) {
       clearInterval(timer);
       if (current < videos.length - 1) {
         playVideo(current + 1);
+      } else {
+        document.getElementById("replayContainer").style.display = "block";
       }
     }
   }, 100);
 }
-
 playVideo(0);
 </script>
 
 </body>
 </html>
+
 
 
 
