@@ -83,12 +83,29 @@
     color: white;
     border-radius: 50px;
     cursor: pointer;
+ body { margin:0; background:#000; }
+  .story-container {
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#000;
+  }
+  video {
+    height:100%;
+    width:auto;
+    object-fit:cover;
   }
 </style>
 </head>
 
 <body>
 
+<div class="story-container">
+  <video id="storyVideo" playsinline autoplay muted controls></video>
+</div>
 <div class="story-container">
   <div class="progress-wrapper">
     <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
@@ -107,16 +124,30 @@
 
 <script>
 const videos = [
-  {
-    src: "https://www.dropbox.com/scl/fi/sgf2swyp28ys0szhag92i/VIDEO-1.mp4?rlkey=mbd55cnr075xmsewmz5uhljub&st=w12st1gi&raw=1",
-    duration: 25
-  },
-  {
-    src: "https://www.dropbox.com/scl/fi/cnbfhx7lv9b40dtweyesv/VIDEO-2.mp4?rlkey=3za7i3gjokn5eec9iaacy3ww2&st=oy0w1hbg&raw=1",
-    duration: 55
-  }
+  "https://drive.google.com/uc?export=download&id=1ZpyrsxDEmfoZQ725tGEMX4mr8gdpESEO",
+  "https://drive.google.com/uc?export=download&id=1jS6RUXT1WJzHjnZDoE0YO-IxRjAQ54AC"
 ];
 
+let index = 0;
+const videoPlayer = document.getElementById("storyVideo");
+
+// First video loads muted to satisfy autoplay rules
+videoPlayer.src = videos[0];
+
+// When user interacts, enable sound
+videoPlayer.addEventListener("click", () => {
+  videoPlayer.muted = false;
+});
+
+// On finish → next video
+videoPlayer.onended = function () {
+  index++;
+  if (index < videos.length) {
+    videoPlayer.src = videos[index];
+    videoPlayer.play();
+    videoPlayer.muted = false;
+  }
+};
 
 let current = 0;
 const video = document.getElementById("storyVideo");
@@ -177,5 +208,6 @@ document.getElementById("viewButton").onclick = () => {
 
 </body>
 </html>
+
 
 
