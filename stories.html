@@ -18,9 +18,18 @@
     #replayContainer { position: absolute; bottom: 40px; width: 100%; text-align: center; display: none; z-index: 200; }
     .btn { background: linear-gradient(45deg,#ff6b6b,#4ecdc4); border:none; padding:1rem 2rem; font-size:1.2rem; color:white; border-radius:50px; cursor:pointer; margin:1rem; transition:all 0.3s ease; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:9999;}
     .btn:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.3); background:linear-gradient(45deg,#ff5252,#26c6da);}
+    #startOverlay { position:fixed;top:0;left:0;width:100vw;height:100vh;
+      background:rgba(0,0,0,0.88);display:flex;align-items:center;
+      justify-content:center;z-index:99999; }
+    #startButton { font-size:2rem; padding:2rem 3rem; }
   </style>
 </head>
 <body>
+<!-- Start overlay, required for audio autoplay -->
+<div id="startOverlay">
+  <button id="startButton" class="btn">🚀start</button>
+</div>
+
 <div class="story-container" id="storyContainer">
   <div class="progress-wrapper">
     <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
@@ -33,21 +42,15 @@
   <div class="touch-right" id="tapRight"></div>
   <div id="replayContainer">
     <a href="home.html"><button class="btn">🔄 Replay Journey</button></a>
-    <div id="startOverlay" style="
-  position:fixed;top:0;left:0;width:100vw;height:100vh;
-  background:rgba(0,0,0,0.77);display:flex;align-items:center;justify-content:center;z-index:99999;">
-  <button id="startButton" class="btn" style="font-size:2rem;"></button>
-</div>
-
   </div>
 </div>
 <script>
 const stories = [
   {
-     url: `<div style="position:relative;aspect-ratio:36/47;">
+    url: `<div style="position:relative;aspect-ratio:36/47;">
       <iframe 
             loading="lazy" title="Gumlet video player"
-            src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59?autoplay=true&muted=true"
+            src="https://play.gumlet.io/embed/6922da6cd8414f42d6998f59?autoplay=true"
             style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
       </iframe>
@@ -59,13 +62,13 @@ const stories = [
     url: `<div style="position:relative;aspect-ratio:540/721;">
       <iframe 
             loading="lazy" title="Gumlet video player"
-            src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854?autoplay=true&muted=true"
+            src="https://play.gumlet.io/embed/6922da6b08aef57ed3300854?autoplay=true"
             style="border:none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
       </iframe>
     </div>`,
     aspect: "540/721",
-    caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
+    caption: "SECOND VIDEO CAPTION"
   }
 ];
 
@@ -118,15 +121,12 @@ function previousStory() {
 }
 document.getElementById("tapRight").addEventListener("click", nextStory);
 document.getElementById("tapLeft").addEventListener("click", previousStory);
+
+// Start overlay disables autoplay block (with sound) on first interaction
 document.getElementById("startButton").onclick = function() {
   document.getElementById("startOverlay").style.display = "none";
-  playStory(0); // this injects the story iframe and sound will be allowed!
+  playStory(0);
 };
-
-
 </script>
 </body>
 </html>
-
-
-
