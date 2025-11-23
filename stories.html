@@ -53,7 +53,8 @@ const stories = [
       </iframe>
     </div>`,
     aspect: "36/47",
-    caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
+    caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
+    duration: 18 // seconds for video 1
   },
   {
     url: `<div style="position:relative;aspect-ratio:540/721;">
@@ -65,7 +66,8 @@ const stories = [
       </iframe>
     </div>`,
     aspect: "540/721",
-    caption: "HAPPY BIRTHDAY MY LOVE❤️😘"
+    caption: "HAPPY BIRTHDAY MY LOVE❤️😘",
+    duration: 40 // seconds for video 2
   }
 ];
 
@@ -76,7 +78,6 @@ const caption = document.getElementById("caption");
 const replayContainer = document.getElementById("replayContainer");
 const storyPlayer = document.getElementById("storyPlayer");
 
-// Dynamically inject Gumlet video embed code as HTML
 function playStory(index) {
   current = index;
   replayContainer.style.display = "none";
@@ -85,10 +86,10 @@ function playStory(index) {
   p1.style.width = index === 0 ? "0%" : "100%";
   p2.style.width = index === 1 ? "0%" : "100%";
 
-  // Simulate progress bar for 10s per story
+  // Use per-story duration for the progress bar
   let bar = current === 0 ? p1 : p2;
   bar.style.width = "0%";
-  let duration = 10;
+  let duration = stories[index].duration;
   let startTime = Date.now();
   let interval = setInterval(() => {
     if (current !== index) return clearInterval(interval);
